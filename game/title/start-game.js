@@ -29,11 +29,7 @@ import MovementProposalSystem from '@game/engine/movement/movement-proposal-syst
 // Game-specific Mechanics
 import InputConfigurationSystem from '@game/specifics/configuration/input-configuration-system';
 
-    // Player Control
-    import PlayerControlMovementSystem from '@game/features/player-control/player-control-movement-system';
-import PlayerControllable from '@game/features/player-control/player-controllable-tag';
-
-    // Weapons
+// Weapons
     
 import TurnsTowardsSystem from '@game/features/turn-towards-cursor/turns-towards-system';
 import TurnsTowards from '@game/features/turn-towards-cursor/turns-towards-tag';
@@ -84,6 +80,10 @@ import AssetConfigurationSystem from '../specifics/configuration/assets/asset-co
 import LogicConfigurationSystem from '../specifics/configuration/logic/logic-configuration-system';
 import ClockSystem from '../features/clock/clock-system';
 import SceneConfigurationSystem from '../specifics/configuration/scene-configuration-system';
+import FxSystem from '../features/fx/fx-system';
+import FxConfigurationSystem from '../specifics/configuration/fx-configuration-system';
+import EventOrchestratorSystem from '../features/event-orchestrator/event-orchestrator-system';
+import PlayerControlIntentSystem from '../features/player-control/player-control-intent-system';
 
 export function startGame() {
 
@@ -147,6 +147,8 @@ export function startGame() {
 
 
     // Ambience
+    Core.addSystem(new FxSystem());
+    
     
     // Utilities
     Core.addSystem(new TimerSystem());
@@ -163,15 +165,6 @@ export function startGame() {
     //Gameplay
     Core.addSystem(new TurnsTowardsSystem());
         Core.addTag(TurnsTowards);
-
-    // AI and Enemies
-    Core.addSystem(new AiSystem());
-        Core.addTag(Ai);
-    Core.addSystem(new AiStateInformerSystem())
-
-    // Player Control (firing, moving)
-    Core.addSystem(new PlayerControlMovementSystem())
-        Core.addTag(PlayerControllable);
 
     // FX
     Core.addTag(Material);
@@ -199,6 +192,7 @@ export function startGame() {
     Core.addSystem(new LogicConfigurationSystem());
     Core.addSystem(new AssetConfigurationSystem()); // Must go after logic
     Core.addSystem(new SceneConfigurationSystem());
+    Core.addSystem(new FxConfigurationSystem())
 
 
     //Debug
@@ -206,6 +200,8 @@ export function startGame() {
 
     /////
     Core.addSystem(new ClockSystem());
+    Core.addSystem(new EventOrchestratorSystem());
+    Core.addSystem(new PlayerControlIntentSystem());
     /////
 
 

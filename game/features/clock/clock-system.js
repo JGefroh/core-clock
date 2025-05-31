@@ -13,6 +13,13 @@ export default class ClockSystem extends System {
     this.timeBetweenAdvancesMs = 1000; // Default advance interval
 
     this.lastPlayed = 'tock';
+
+    this.addHandler('SET_CLOCK_SPEED', (payload) => {
+      this.timeBetweenAdvancesMs = payload.ms;
+    }); 
+
+    this.addHandler('REVERT_STATE', (payload) => {
+    })
   }
 
   initialize() {
@@ -25,6 +32,10 @@ export default class ClockSystem extends System {
 
   work() {
     this.advanceTime(1000)
+  }
+
+  reset() {
+    this.timeBetweenAdvancesMs = 1000;
   }
 
   setToCurrentTime() {
