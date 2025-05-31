@@ -85,6 +85,7 @@ import FxConfigurationSystem from '../specifics/configuration/fx-configuration-s
 import EventOrchestratorSystem from '../features/event-orchestrator/event-orchestrator-system';
 import PlayerControlIntentSystem from '../features/player-control/player-control-intent-system';
 import SanitySystem from '../features/sanity/sanity-system';
+import GameOverSystem from '../features/game-over/game-over-system';
 
 export function startGame() {
 
@@ -205,6 +206,7 @@ export function startGame() {
     Core.addSystem(new ClockSystem());
     Core.addSystem(new PlayerControlIntentSystem());
     Core.addSystem(new SanitySystem());
+    Core.addSystem(new GameOverSystem());
     /////
 
 

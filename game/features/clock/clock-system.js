@@ -68,7 +68,8 @@ export default class ClockSystem extends System {
 
       this.send("PLAY_AUDIO", {
         audioKey: this.lastPlayed == 'tick' ? 'tock.mp3' : 'tick.mp3',
-        volume: this.clockVolume
+        volume: this.clockVolume,
+        endAt: 0.2
       })
       this.lastPlayed = (this.lastPlayed == 'tick' ? 'tock' : 'tick');
     }
