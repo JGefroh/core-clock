@@ -11,6 +11,13 @@ export default class SanitySystem extends System {
         this.playerSanity = 1000;
         this.wait = 1000;
 
+        this.yes = [
+            'yes-1.mp3',
+            'yes-2.mp3',
+            'yes-3.mp3',
+            'yes-4.mp3',
+        ]
+
         this.whisper_nos = [
             'no-whisper-1.mp3',
             'no-whisper-2.mp3',
@@ -33,6 +40,11 @@ export default class SanitySystem extends System {
             this.playerSanity -= payload.sanity;
             this.onDrainSanity();
         });
+
+        this.addHandler('RESTORE_SANITY', (payload) => {
+            this.playerSanity += payload.sanity;
+            this.onRestoreSanity();
+        });
     }
 
     work() {
@@ -42,6 +54,13 @@ export default class SanitySystem extends System {
         }
         this._core.publishData('CURRENT_SANITY', this.playerSanity)
         this.randomSanityEvent();
+    }
+
+    onRestoreSanity() {
+        this.send('PLAY_AUDIO', {   
+            audioKey: _getRandomFrom(this.yes),
+            volume: 0.5
+        });
     }
 
     onDrainSanity() {
