@@ -16,17 +16,28 @@ export default class EventOrchestratorSystem extends System {
         this.addHandler('REGISTER_FX', (payload) => {
             this.addAsEvent(payload)
         })
+
+        this.addHandler('FORCE_EVENT', (payload) => {
+            this.runEvent();
+        })
     }
 
     work() {
-        if (Date.now() >= this.nextEventTime && Math.random() < 0.10) {
-            const event = this._getRandomEvent();
-            if (event) {
-                this.nextEventTime = Date.now() + event.minimumTimeMs ;
-                this.send('EXECUTE_FX', { fxKey: event.fxKey, ...event.params() });
-            }
+        if (Date.now() >= this.nextEventTime && Math.random() < 0.2) {
+            this.runEvent();
         }
     }
+
+    runEvent() {
+        const event = this._getRandomEvent();
+        console.info(event)
+        if (event) {
+            this.nextEventTime = Date.now() + event.minimumTimeMs ;
+            let eventParams = { fxKey: event.fxKey, params: event.params() }
+            this.send('EXECUTE_FX', eventParams);
+        }
+    }
+
 
     addAsEvent(payload) {
         this.possibleEvents[payload.getFxKey()] = {
@@ -41,6 +52,7 @@ export default class EventOrchestratorSystem extends System {
     applyOverride() {
         this.overrideEvents = {
             'FxClockVolumeChange': {
+                fxKey: 'FxClockVolumeChange',
                 sanity: 10,
                 minimumTimeMs: 5000,
                 params: () => { return {

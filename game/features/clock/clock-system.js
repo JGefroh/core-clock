@@ -18,6 +18,10 @@ export default class ClockSystem extends System {
       this.timeBetweenAdvancesMs = payload.ms;
     }); 
 
+    this.addHandler('SET_CLOCK_VOLUME', (payload) => {
+      this.clockVolume = payload.volume;
+    }); 
+
     this.addHandler('REVERT_STATE', (payload) => {
     })
   }
@@ -64,7 +68,7 @@ export default class ClockSystem extends System {
 
       this.send("PLAY_AUDIO", {
         audioKey: this.lastPlayed == 'tick' ? 'tock.mp3' : 'tick.mp3',
-        volume: 0.8
+        volume: this.clockVolume
       })
       this.lastPlayed = (this.lastPlayed == 'tick' ? 'tock' : 'tick');
     }

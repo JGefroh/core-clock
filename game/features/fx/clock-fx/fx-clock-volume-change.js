@@ -1,13 +1,13 @@
 import FxBase from "../fx-base";
 
-class FxTimeStop extends FxBase {
+class FxClockVolumeChange extends FxBase {
     execute(core, params = {}) {
-        core.send('SET_CLOCK_SPEED', { ms: Infinity})
+        core.send('SET_CLOCK_VOLUME', params)
     }
     
     undo(core, params = {}) {
-        core.send('SET_CLOCK_SPEED', { ms: 1000})
+        core.send('SET_CLOCK_VOLUME', { volume: 0.8})
     }
 }
 
-export default FxTimeStop
+export default FxClockVolumeChange
