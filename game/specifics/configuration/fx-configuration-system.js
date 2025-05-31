@@ -15,6 +15,6 @@ export default class FxConfigurationSystem extends System {
         this.send('REGISTER_FX', FxTimeSpeedDown);
         this.send('REGISTER_FX', FxTimeStop);
         this.send('REGISTER_FX', FxClockVolumeChange);
-        this.send('FORCE_EVENT');
+        // this.send('FORCE_EVENT');
     }
   }

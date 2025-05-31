@@ -84,6 +84,7 @@ import FxSystem from '../features/fx/fx-system';
 import FxConfigurationSystem from '../specifics/configuration/fx-configuration-system';
 import EventOrchestratorSystem from '../features/event-orchestrator/event-orchestrator-system';
 import PlayerControlIntentSystem from '../features/player-control/player-control-intent-system';
+import SanitySystem from '../features/sanity/sanity-system';
 
 export function startGame() {
 
@@ -203,6 +204,7 @@ export function startGame() {
     /////
     Core.addSystem(new ClockSystem());
     Core.addSystem(new PlayerControlIntentSystem());
+    Core.addSystem(new SanitySystem());
     /////
 
 

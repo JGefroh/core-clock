@@ -12,6 +12,7 @@ export default class EventOrchestratorSystem extends System {
 
         this.wait = 2000;
         this.nextEventTime = Date.now();
+        this.currentEvent = null;
 
         this.addHandler('REGISTER_FX', (payload) => {
             this.addAsEvent(payload)
@@ -20,6 +21,10 @@ export default class EventOrchestratorSystem extends System {
         this.addHandler('FORCE_EVENT', (payload) => {
             this.runEvent();
         })
+
+        this.addHandler('STOP_EVENT', (payload) => {
+            this.stopEvent();
+        });
     }
 
     work() {
@@ -28,13 +33,22 @@ export default class EventOrchestratorSystem extends System {
         }
     }
 
+    stopEvent() {
+        this.send('UNDO_FX');
+        this._core.publishData('CURRENT_EVENT_SANITY_DRAIN', 0);
+        this.currentEvent = null;
+    }
+
     runEvent() {
         const event = this._getRandomEvent();
-        console.info(event)
+        
         if (event) {
             this.nextEventTime = Date.now() + event.minimumTimeMs ;
             let eventParams = { fxKey: event.fxKey, params: event.params() }
+            this.currentEvent = event;
             this.send('EXECUTE_FX', eventParams);
+            
+            this._core.publishData('CURRENT_EVENT_SANITY_DRAIN', this.currentEvent?.sanity);
         }
     }
 

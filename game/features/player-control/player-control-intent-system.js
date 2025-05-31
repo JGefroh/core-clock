@@ -17,6 +17,6 @@ export default class PlayerControlIntentSystem extends System {
     }
 
     payAttention() {
-        this.send('UNDO_FX');
+        this.send('STOP_EVENT');
     }
 }

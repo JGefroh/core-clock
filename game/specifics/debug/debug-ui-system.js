@@ -60,6 +60,15 @@ export default class DebugUiSystem extends System {
                   key: 'debug-line-2',
                   value: `${data.slowestSystem} - ${data.slowestSystemTime.toFixed(2)}ms | ${data.lastAssignedId}`
                 })
+                this.send("GUI_UPDATE_TEXT", {
+                  key: 'debug-line-3',
+                  value: `Sanity: ${this._core.getData('CURRENT_SANITY')}`
+                })
+
+                this.send("GUI_UPDATE_TEXT", {
+                  key: 'debug-line-4',
+                  value: `Sanity Drain: -${this._core.getData('CURRENT_EVENT_SANITY_DRAIN')}`
+                })
               })
           }, 500)
         }
