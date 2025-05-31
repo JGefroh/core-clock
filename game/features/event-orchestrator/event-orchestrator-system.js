@@ -56,6 +56,7 @@ export default class EventOrchestratorSystem extends System {
             this.send('EXECUTE_FX', eventParams);
             
             this._core.publishData('CURRENT_EVENT_SANITY_DRAIN', this.currentEvent?.sanity);
+            this._core.publishData('CURRENT_EVENT', this.currentEvent.fxKey);
         }
     }
 
@@ -66,25 +67,6 @@ export default class EventOrchestratorSystem extends System {
             sanity: 10,
             minimumTimeMs: 5000,
             params: () => {}
-        };
-        this.applyOverride()
-    }
-
-    applyOverride() {
-        this.overrideEvents = {
-            'FxClockVolumeChange': {
-                fxKey: 'FxClockVolumeChange',
-                sanity: 10,
-                minimumTimeMs: 5000,
-                params: () => { return {
-                    volume: Math.random() * 1
-                }}
-            }
-        }
-
-        this.possibleEvents = {
-            ...this.possibleEvents,
-            ...this.overrideEvents
         };
     }
 

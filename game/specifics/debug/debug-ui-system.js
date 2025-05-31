@@ -62,11 +62,15 @@ export default class DebugUiSystem extends System {
                 })
                 this.send("GUI_UPDATE_TEXT", {
                   key: 'debug-line-3',
+                  value: `Event: ${this._core.getData('CURRENT_EVENT')}`
+                })
+                this.send("GUI_UPDATE_TEXT", {
+                  key: 'debug-line-4',
                   value: `Sanity: ${this._core.getData('CURRENT_SANITY')}`
                 })
 
                 this.send("GUI_UPDATE_TEXT", {
-                  key: 'debug-line-4',
+                  key: 'debug-line-5',
                   value: `Sanity Drain: -${this._core.getData('CURRENT_EVENT_SANITY_DRAIN')}`
                 })
               })

@@ -12,6 +12,9 @@ export default class ClockSystem extends System {
     this.lastAdvanceTimestamp = performance.now();
     this.timeBetweenAdvancesMs = 1000; // Default advance interval
 
+
+    this.shouldTockTock = false;
+
     this.lastPlayed = 'tock';
 
     this.addHandler('SET_CLOCK_SPEED', (payload) => {
@@ -23,6 +26,10 @@ export default class ClockSystem extends System {
     }); 
 
     this.addHandler('REVERT_STATE', (payload) => {
+    })
+
+    this.addHandler('SET_CLOCK_TOCK_TOCK', (payload) => {
+      this.shouldTockTock = payload.tocktock;
     })
   }
 
@@ -66,12 +73,16 @@ export default class ClockSystem extends System {
       minuteComponent.angleDegrees = (minuteComponent.angleDegrees + (6 / 60) * steps) % 360;
       hourComponent.angleDegrees = (hourComponent.angleDegrees + (30 / 3600) * steps) % 360;
 
+      let soundToPlay = this.lastPlayed == 'tick' ? 'tock.mp3' : 'tick.mp3';
+
       this.send("PLAY_AUDIO", {
-        audioKey: this.lastPlayed == 'tick' ? 'tock.mp3' : 'tick.mp3',
+        audioKey: this.shouldTockTock ? `${this.lastPlayed}.mp3` : soundToPlay,
         volume: this.clockVolume,
         endAt: 0.2
       })
-      this.lastPlayed = (this.lastPlayed == 'tick' ? 'tock' : 'tick');
+      if (!this.shouldTockTock) {
+        this.lastPlayed = (this.lastPlayed == 'tick' ? 'tock' : 'tick');
+      }
     }
   }
 
