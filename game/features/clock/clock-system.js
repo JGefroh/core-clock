@@ -8,6 +8,11 @@ import AttachedComponent from '../../engine/attachments/attached-component';
 export default class ClockSystem extends System {
   constructor() {
     super();
+
+    this.lastAdvanceTimestamp = performance.now();
+    this.timeBetweenAdvancesMs = 1000; // Default advance interval
+
+    this.lastPlayed = 'tock';
   }
 
   initialize() {
@@ -15,16 +20,64 @@ export default class ClockSystem extends System {
     this.createHandHour();
     this.createHandMinute();
     this.createHandSecond();
+    this.setToCurrentTime();
   }
 
   work() {
-    this._core.getEntityWithKey('clock-hour-hand-base').getComponent('PositionComponent').angleDegrees+=1;
-    this._core.getEntityWithKey('clock-minute-hand-base').getComponent('PositionComponent').angleDegrees+=1;
-    this._core.getEntityWithKey('clock-second-hand-base').getComponent('PositionComponent').angleDegrees+=1;
+    this.advanceTime(1000)
   }
 
+  setToCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    this.setTime(hours, minutes, seconds);
+  }
+
+  advanceTime() {
+    const now = performance.now();
+    const elapsed = now - this.lastAdvanceTimestamp;
+
+    if (elapsed >= this.timeBetweenAdvancesMs) {
+      const steps = Math.floor(elapsed / this.timeBetweenAdvancesMs);
+      this.lastAdvanceTimestamp += steps * this.timeBetweenAdvancesMs;
+
+      const hourComponent = this._core.getEntityWithKey('clock-hour-hand-base').getComponent('PositionComponent');
+      const minuteComponent = this._core.getEntityWithKey('clock-minute-hand-base').getComponent('PositionComponent');
+      const secondComponent = this._core.getEntityWithKey('clock-second-hand-base').getComponent('PositionComponent');
+
+      secondComponent.angleDegrees = (secondComponent.angleDegrees + 6 * steps) % 360;
+      minuteComponent.angleDegrees = (minuteComponent.angleDegrees + (6 / 60) * steps) % 360;
+      hourComponent.angleDegrees = (hourComponent.angleDegrees + (30 / 3600) * steps) % 360;
+
+      this.send("PLAY_AUDIO", {
+        audioKey: this.lastPlayed == 'tick' ? 'tock.mp3' : 'tick.mp3',
+        volume: 0.8
+      })
+      this.lastPlayed = (this.lastPlayed == 'tick' ? 'tock' : 'tick');
+    }
+  }
+
+
+  setTime(hours, minutes, seconds) {
+    hours = hours % 12;
+    minutes = minutes % 60;
+    seconds = seconds % 60;
+
+    const hourAngle = (hours * 30) + (minutes / 60) * 30;
+    const minuteAngle = minutes * 6;
+    const secondAngle = seconds * 6;
+
+    this._core.getEntityWithKey('clock-hour-hand-base').getComponent('PositionComponent').angleDegrees = hourAngle;
+    this._core.getEntityWithKey('clock-minute-hand-base').getComponent('PositionComponent').angleDegrees = minuteAngle;
+    this._core.getEntityWithKey('clock-second-hand-base').getComponent('PositionComponent').angleDegrees = secondAngle;
+  }
+
+  /// Entity Generation
+
   createClock() {
-    let entity = new Entity()
+    let entity = new Entity({key: 'clock-face'})
     let width = window.innerWidth / 2;
     let height = width;
     let xPosition = 0;
@@ -44,7 +97,8 @@ export default class ClockSystem extends System {
         height: height,
         shape: 'circle',
         shapeColor: 'rgba(255,255,255,1)',
-        renderLayer: 'PROP'
+        renderLayer: 'PROP',
+        imagePath: 'CLOCK_FACE'
     }))
     this._core.addEntity(entity);
   }
@@ -89,7 +143,7 @@ export default class ClockSystem extends System {
     }))
 
     handEntity.addComponent(new AttachedComponent({
-        attachedToEntity: baseEntity, sync: ['xPosition', 'yPosition', 'angleDegrees'], attachmentOptions: {xPosition: 0, yPosition: height / 2, angleDegrees: 0}
+        attachedToEntity: baseEntity, sync: ['xPosition', 'yPosition', 'angleDegrees'], attachmentOptions: {xPosition: 0, yPosition: -height / 2, angleDegrees: 0}
     }))
     this._core.addEntity(handEntity);
   }
@@ -134,7 +188,7 @@ export default class ClockSystem extends System {
     }))
 
     handEntity.addComponent(new AttachedComponent({
-        attachedToEntity: baseEntity, sync: ['xPosition', 'yPosition', 'angleDegrees'], attachmentOptions: {xPosition: 0, yPosition: height / 2, angleDegrees: 0}
+        attachedToEntity: baseEntity, sync: ['xPosition', 'yPosition', 'angleDegrees'], attachmentOptions: {xPosition: 0, yPosition: -height / 2, angleDegrees: 0}
     }))
     this._core.addEntity(handEntity);
   }
@@ -149,13 +203,20 @@ export default class ClockSystem extends System {
     let baseEntity = new Entity({key: 'clock-second-hand-base'});
     baseEntity.addComponent(new PositionComponent(
         {
-            width: width,
-            height: height,
+            width: 30,
+            height: 30,
             xPosition: xPosition,
             yPosition: yPosition,
-            angleDegrees: Math.random() * 360
         }
     ));
+    baseEntity.addComponent(new RenderComponent({
+        width: 30,
+        height: 30,
+        shape: 'circle',
+        shapeColor: 'rgba(255,0,0,1)',
+        renderLayer: 'PROP',
+        renderAlignment: 'center',
+    }))
     this._core.addEntity(baseEntity);
 
 
@@ -175,11 +236,11 @@ export default class ClockSystem extends System {
         shape: 'rectangle',
         shapeColor: 'rgba(255,0,0,1)',
         renderLayer: 'PROP',
-        renderAlignment: 'center'
+        renderAlignment: 'center',
     }))
 
     handEntity.addComponent(new AttachedComponent({
-        attachedToEntity: baseEntity, sync: ['xPosition', 'yPosition', 'angleDegrees'], attachmentOptions: {xPosition: 0, yPosition: height / 2, angleDegrees: 0}
+        attachedToEntity: baseEntity, sync: ['xPosition', 'yPosition', 'angleDegrees'], attachmentOptions: {xPosition: 0, yPosition: -height / 2, angleDegrees: 0}
     }))
     this._core.addEntity(handEntity);
   }
