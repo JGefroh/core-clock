@@ -185,6 +185,8 @@ export function startGame() {
     // Game-specific configuration
     ////
 
+    Core.addSystem(new EventOrchestratorSystem());
+
     // Game Specific Configuration
     Core.addSystem(new InputConfigurationSystem());
     Core.addSystem(new CollisionConfigurationSystem());
@@ -200,7 +202,6 @@ export function startGame() {
 
     /////
     Core.addSystem(new ClockSystem());
-    Core.addSystem(new EventOrchestratorSystem());
     Core.addSystem(new PlayerControlIntentSystem());
     /////
 

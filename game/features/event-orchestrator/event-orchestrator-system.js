@@ -6,21 +6,16 @@ export default class EventOrchestratorSystem extends System {
     constructor() {
         super();
 
-        this.possibleEvents = {
-            'FxTimeSpeedUp': {
-                fxKey: 'FxTimeSpeedUp',
-                sanity: 10,
-                minimumTimeMs: 5000
-            },
-            'FxTimeSpeedDown': {
-                fxKey: 'FxTimeSpeedDown',
-                sanity: 10,
-                minimumTimeMs: 5000
-            }
-        };
+        this.possibleEvents = {};
+        this.overrideEvents = {};
+
 
         this.wait = 2000;
         this.nextEventTime = Date.now();
+
+        this.addHandler('REGISTER_FX', (payload) => {
+            this.addAsEvent(payload)
+        })
     }
 
     work() {
@@ -28,9 +23,36 @@ export default class EventOrchestratorSystem extends System {
             const event = this._getRandomEvent();
             if (event) {
                 this.nextEventTime = Date.now() + event.minimumTimeMs ;
-                this.send('EXECUTE_FX', { fxKey: event.fxKey });
+                this.send('EXECUTE_FX', { fxKey: event.fxKey, ...event.params() });
             }
         }
+    }
+
+    addAsEvent(payload) {
+        this.possibleEvents[payload.getFxKey()] = {
+            fxKey: payload.getFxKey(),
+            sanity: 10,
+            minimumTimeMs: 5000,
+            params: () => {}
+        };
+        this.applyOverride()
+    }
+
+    applyOverride() {
+        this.overrideEvents = {
+            'FxClockVolumeChange': {
+                sanity: 10,
+                minimumTimeMs: 5000,
+                params: () => { return {
+                    volume: Math.random() * 1
+                }}
+            }
+        }
+
+        this.possibleEvents = {
+            ...this.possibleEvents,
+            ...this.overrideEvents
+        };
     }
 
     _getRandomEvent() {
