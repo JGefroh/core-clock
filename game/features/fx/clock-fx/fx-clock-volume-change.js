@@ -5,13 +5,13 @@ class FxClockVolumeChange extends FxBase {
 
         const rand = Math.random();
         params = {
-            volume: rand < 0.5 ? 0.3 : 1
+            volume: rand < 0.5 ? 0.2 : 1
         };
         core.send('SET_CLOCK_VOLUME', params)
     }
     
     undo(core, params = {}) {
-        core.send('SET_CLOCK_VOLUME', { volume: 0.8})
+        core.send('SET_CLOCK_VOLUME', { volume: 0.6})
     }
 }
 

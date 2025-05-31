@@ -11,9 +11,10 @@ export default class ClockSystem extends System {
 
     this.lastAdvanceTimestamp = performance.now();
     this.timeBetweenAdvancesMs = 1000; // Default advance interval
-
+    this.clockVolume = 0.6;
 
     this.shouldTockTock = false;
+    this.rotate = 0;
 
     this.lastPlayed = 'tock';
 
@@ -30,6 +31,13 @@ export default class ClockSystem extends System {
 
     this.addHandler('SET_CLOCK_TOCK_TOCK', (payload) => {
       this.shouldTockTock = payload.tocktock;
+    })
+
+    this.addHandler('SET_CLOCK_ROTATE', (payload) => {
+      this.rotate = payload.direction;
+      if (!payload.direction) {
+        this._core.getEntityWithKey('clock-face').getComponent('PositionComponent').angleDegrees = 0;
+      }
     })
   }
 
@@ -83,6 +91,9 @@ export default class ClockSystem extends System {
       if (!this.shouldTockTock) {
         this.lastPlayed = (this.lastPlayed == 'tick' ? 'tock' : 'tick');
       }
+      if (this.rotate) {
+        this._core.getEntityWithKey('clock-face').getComponent('PositionComponent').angleDegrees += (this.rotate * 3)
+      }
     }
   }
 
@@ -105,7 +116,7 @@ export default class ClockSystem extends System {
 
   createClock() {
     let entity = new Entity({key: 'clock-face'})
-    let width = window.innerWidth / 2;
+    let width = window.innerHeight;
     let height = width;
     let xPosition = 0;
     let yPosition = 0;
