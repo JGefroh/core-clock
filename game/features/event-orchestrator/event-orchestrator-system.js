@@ -34,6 +34,9 @@ export default class EventOrchestratorSystem extends System {
     }
 
     stopEvent() {
+        if (!this.currentEvent) {
+            this.send('DRAIN_SANITY', {sanity: 30})
+        }
         this.send('UNDO_FX');
         this._core.publishData('CURRENT_EVENT_SANITY_DRAIN', 0);
         this.currentEvent = null;
