@@ -7,6 +7,7 @@ export default class HeartbeatSystem extends System {
         this.volume = 0.2; // Initial volume
         this.lastBeatTime = 0;
         this.currentBeat = 0;
+        this.maxSanity = 300;
     }
 
     setBPM(bpm) {
@@ -29,19 +30,18 @@ export default class HeartbeatSystem extends System {
     setBPMAndVolumeFromSanity() {
         const sanity = this._core.getData('CURRENT_SANITY');
     
-        const clampedSanity = Math.max(0, Math.min(500, sanity)); // 0–500
-    
-        if (clampedSanity >= 450) {
-            // From 500 to 450 sanity: volume starts to fade in, BPM slightly increases
-            this.bpm = 60 + (65 - 60) * (500 - clampedSanity) / 50; // 60 BPM at 500, 65 BPM at 450
-            this.volume = 0.0 + (0.1 - 0.0) * (500 - clampedSanity) / 50; // 0.0 volume at 500, 0.1 at 450
+        const clampedSanity = Math.max(0, Math.min(this.maxSanity, sanity)); // 0–maxSanity
+        
+        const firstThreshold = this.maxSanity * 0.5; // 50% of max sanity
+
+        if (clampedSanity >= firstThreshold) {
+            this.bpm = 60 + (65 - 60) * (this.maxSanity - clampedSanity) / (this.maxSanity - firstThreshold); 
+            this.volume = 0.0 + (0.1 - 0.0) * (this.maxSanity - clampedSanity) / (this.maxSanity - firstThreshold);
         } else if (clampedSanity > 0) {
-            // Below 450 sanity
-            const sanityFactor = (450 - clampedSanity) / 450; // 0 at 450, 1 at 0
-            this.bpm = 65 + (180 - 65) * sanityFactor;         // 65 BPM at 450, 180 BPM at 0
-            this.volume = 0.1 + (1.0 - 0.1) * sanityFactor;    // 0.1 volume at 450, 1.0 at 0
-        }
-        else {
+            const sanityFactor = (firstThreshold - clampedSanity) / firstThreshold; // 0 at firstThreshold, 1 at 0
+            this.bpm = 65 + (180 - 65) * sanityFactor;
+            this.volume = 0.1 + (1.0 - 0.1) * sanityFactor;
+        } else {
             this.bpm = 0;
             this.volume = 0;
         }

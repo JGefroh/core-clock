@@ -8,7 +8,7 @@ export default class SanitySystem extends System {
     constructor() {
         super()
 
-        this.playerSanity = 500;
+        this.playerSanity = 300;
         this.wait = 1000;
 
         this.yes = [
@@ -64,19 +64,19 @@ export default class SanitySystem extends System {
     }
 
     onDrainSanity() {
-        if (this.playerSanity >= 400) {
+        if (this.playerSanity >= 200) {
             this.send('PLAY_AUDIO', {   
                 audioKey: _getRandomFrom(this.whisper_nos),
                 volume: 0.5
             });
         }
-        else if (this.playerSanity >= 250) {
+        else if (this.playerSanity >= 100) {
             this.send('PLAY_AUDIO', {   
                 audioKey: _getRandomFrom(this.frustrated_nos),
                 volume: 0.5
             });
         }
-        else if (this.playerSanity >= 150) {
+        else if (this.playerSanity >= 0) {
             this.send('PLAY_AUDIO', {   
                 audioKey: _getRandomFrom(this.aggressive_nos),
                 volume: 0.5
@@ -86,11 +86,20 @@ export default class SanitySystem extends System {
     }
 
     randomSanityEvent() {
-        // if (Math.random() < 0.1) {
-        //     this.send('PLAY_AUDIO', {   
-        //         audioKey: 'whisper-1.mp3',
-        //         volume: 0.5
-        //     });
-        // }
+        if (Math.random() < 0.1) {
+            if (this.playerSanity > 150) {
+                this.send('PLAY_AUDIO', {   
+                    audioKey: 'telephone-ring.mp3',
+                    volume: 1
+                });
+            }
+            else if (this.playerSanity <= 150) {
+                this.send('PLAY_AUDIO', {   
+                    audioKey: 'whisper-1.mp3',
+                    volume: 0.5
+                });
+            }
+            
+        }
     }
 }
