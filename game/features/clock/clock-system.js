@@ -15,6 +15,7 @@ export default class ClockSystem extends System {
     this.clockVolume = 0.6;
 
     this.shouldTockTock = false;
+    this.shouldShrinkHands = false;
     this.rotate = 0;
 
     this.lastPlayed = 'tock';
@@ -29,6 +30,11 @@ export default class ClockSystem extends System {
 
     this.addHandler('REVERT_STATE', (payload) => {
     })
+
+    this.addHandler('SET_CLOCK_SHRINK_HANDS', (payload) => {
+      this.shouldShrinkHands = payload.shouldShrinkHands;
+    })
+
 
     this.addHandler('SET_CLOCK_TOCK_TOCK', (payload) => {
       this.shouldTockTock = payload.tocktock;
@@ -94,6 +100,19 @@ export default class ClockSystem extends System {
       }
       if (this.rotate) {
         this._core.getEntityWithKey('clock-face').getComponent('PositionComponent').angleDegrees += (this.rotate * 3)
+      }
+      if (this.shouldShrinkHands) {
+        let height = this._core.getEntityWithKey('clock-hour-hand').getComponent('RenderComponent').height;
+        console.info(this.shouldShrinkHands, height)
+
+        this._core.getEntityWithKey('clock-hour-hand').getComponent('RenderComponent').height = Math.max(0, height * 0.9)
+        this._core.getEntityWithKey('clock-minute-hand').getComponent('RenderComponent').height = Math.max(0, height * 0.9)
+        this._core.getEntityWithKey('clock-second-hand').getComponent('RenderComponent').height = Math.max(0, height * 0.9)
+      }
+      else {
+        this._core.getEntityWithKey('clock-hour-hand').getComponent('RenderComponent').height = this.clockSize * 0.4
+        this._core.getEntityWithKey('clock-minute-hand').getComponent('RenderComponent').height = this.clockSize * 0.4
+        this._core.getEntityWithKey('clock-second-hand').getComponent('RenderComponent').height = this.clockSize * 0.4
       }
     }
   }
@@ -162,7 +181,7 @@ export default class ClockSystem extends System {
     this._core.addEntity(baseEntity);
 
 
-    let handEntity = new Entity()
+    let handEntity = new Entity({key: 'clock-hour-hand'})
     handEntity.addComponent(new PositionComponent(
         {
             width: width,
@@ -207,7 +226,7 @@ export default class ClockSystem extends System {
     this._core.addEntity(baseEntity);
 
 
-    let handEntity = new Entity()
+    let handEntity = new Entity({key: 'clock-minute-hand'})
     handEntity.addComponent(new PositionComponent(
         {
             width: width,
@@ -259,7 +278,7 @@ export default class ClockSystem extends System {
     this._core.addEntity(baseEntity);
 
 
-    let handEntity = new Entity()
+    let handEntity = new Entity({key: 'clock-second-hand'})
     handEntity.addComponent(new PositionComponent(
         {
             width: width,

@@ -10,6 +10,7 @@ import FxZoomIn from '../../features/fx/clock-fx/fx-zoom-in';
 import FxZoomOut from '../../features/fx/clock-fx/fx-zoom-out';
 import FxClockTockTock from '../../features/fx/clock-fx/fx-clock-tock-tock';
 import FxClockRotate from '../../features/fx/clock-fx/fx-clock-rotate';
+import FxClockShrinkHands from '../../features/fx/clock-fx/fx-clock-shrink-hands';
 
 export default class FxConfigurationSystem extends System {
     constructor() {
@@ -23,6 +24,7 @@ export default class FxConfigurationSystem extends System {
         this.send('REGISTER_FX', FxZoomOut); 
         this.send('REGISTER_FX', FxClockTockTock);
         this.send('REGISTER_FX', FxClockRotate);
+        this.send('REGISTER_FX', FxClockShrinkHands);
         // this.send('FORCE_EVENT');
     }
   }
