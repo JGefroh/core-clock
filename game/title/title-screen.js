@@ -5,29 +5,59 @@ import { startGame } from '@game/title/start-game';
 
 
 // General Mechanics
-import AssetLoaderSystem from '@game/engine/assets/asset-loader-system';
-import AudioListener from '@game/engine/audio/audio-listener-tag';
-import AudioSystem from '@game/engine/audio/audio-system';
-import Collidable from '@game/engine/collision/collidable-tag';
-import CollisionSystem from '@game/engine/collision/collision-system';
-import MapGeneratorSystem from '@game/engine/generators/map-generator-system';
-import PropGeneratorSystem from '@game/engine/generators/prop-generator-system';
-import GuiCanvasRenderable from '@game/engine/gui/gui-canvas-renderable-tag';
+
+// General Mechanics
 import GuiSystem from '@game/engine/gui/gui-system';
 import LightSystem from '@game/engine/lighting/light-system';
-import Lightable from '@game/engine/lighting/lightable-tag';
-import Shadowable from '@game/engine/lighting/shadowable-tag';
-import MovementFinalizationSystem from '@game/engine/movement/movement-finalization-system';
-import MovementProposalSystem from '@game/engine/movement/movement-proposal-system';
-import Movable from '@game/engine/movement/movement-tags';
-import ParticleSystem from '@game/engine/particle/particle-system';
 import RenderSystem from '@game/engine/renderer/render-system';
-import Renderable from '@game/engine/renderer/render-tags';
 import RenderRenderablesSystem from '@game/engine/renderer/render-renderables-system';
 import TimerSystem from '@game/engine/timer/timer-system';
+import Cursorable from '@game/tracker/cursorable';
+import MouseTrackerSystem from '@game/tracker/mouse-tracker-system';
+
+import AudioListener from '@game/engine/audio/audio-listener-tag';
+import AudioSystem from '@game/engine/audio/audio-system';
+import GuiCanvasRenderable from '@game/engine/gui/gui-canvas-renderable-tag';
+import InputSystem from '@game/engine/input/input-system';
+import ParticleSystem from '@game/engine/particle/particle-system';
+import ViewportSystem from '@game/engine/renderer/viewport-system';
+
+// Base gameplay systems
+import MovementFinalizationSystem from '@game/engine/movement/movement-finalization-system';
+import MovementProposalSystem from '@game/engine/movement/movement-proposal-system';
+
+// Game-specific Mechanics
+import InputConfigurationSystem from '@game/specifics/configuration/input-configuration-system';
+
+// Weapons
+    
+import TurnsTowardsSystem from '@game/features/turn-towards-cursor/turns-towards-system';
+import TurnsTowards from '@game/features/turn-towards-cursor/turns-towards-tag';
+
+
+
+// Tags
+import Lightable from '@game/engine/lighting/lightable-tag';
+import Movable from '@game/engine/movement/movement-tags';
+import Renderable from '@game/engine/renderer/render-tags';
 import Timer from '@game/engine/timer/timer-tag';
+
+//Debug systems
+import Collidable from '@game/engine/collision/collidable-tag';
+import CollisionSystem from '@game/engine/collision/collision-system';
+import Shadowable from '@game/engine/lighting/shadowable-tag';
+import ViewportFollowable from '@game/engine/renderer/viewport-followable-tag';
+import DebugUiSystem from '@game/specifics/debug/debug-ui-system';
 import Attached from '../engine/attachments/attached-tag';
 import AttachmentSyncSystem from '../engine/attachments/attachment-sync-system';
+import CollisionConfigurationSystem from '../specifics/configuration/collision-configuration-system';
+
+
+import AiSystem from '@game/engine/ai/ai-system';
+import AssetLoaderSystem from '@game/engine/assets/asset-loader-system';
+import MapGeneratorSystem from '@game/engine/generators/map-generator-system';
+import PropGeneratorSystem from '@game/engine/generators/prop-generator-system';
+import Ai from '../engine/ai/ai-tag';
 import HasLogic from '../engine/logic/has-logic';
 import LogicSystem from '../engine/logic/logic-system';
 import Material from '../engine/material/material-tag';
@@ -35,21 +65,29 @@ import ParticleEmitter from '../engine/particle/particle-emitter-tag';
 import TextureSystem from '../engine/renderer/texture-system';
 import DistanceTrack from '../engine/tracker/distance-track-tag';
 import DistanceTrackerSystem from '../engine/tracker/distance-tracker-system';
+import AiStateInformerSystem from '../features/ai/informers/ai-state-informer-system';
+import DoorOpener from '../features/door/door-opener';
+import DoorSystem from '../features/door/door-system';
+import Door from '../features/door/door-tag';
 import FootstepFxSystem from '../features/footstep-fx/footstep-fx-system';
 import HasFootsteps from '../features/footstep-fx/has-footsteps-tag';
+import DustParticleFxSystem from '../features/fx/dust-particle-fx-system';
 import TrailEmitter from '../features/trail-fx/trail-emitter-tag';
 import TrailSystem from '../features/trail-fx/trail-system';
 import TrailZone from '../features/trail-fx/trail-zone-tag';
+import AiConfigurationSystem from '../specifics/configuration/ai-configuration-system';
 import AssetConfigurationSystem from '../specifics/configuration/assets/asset-configuration-system';
-import CollisionConfigurationSystem from '../specifics/configuration/collision-configuration-system';
 import LogicConfigurationSystem from '../specifics/configuration/logic/logic-configuration-system';
-
-
-
-import LightSourceComponent from '@game/engine/lighting/light-source-component';
-import VectorComponent from '@game/engine/movement/vector-component';
-import PositionComponent from '@game/engine/position/position-component';
-import RenderComponent from '@game/engine/renderer/render-component';
+import ClockSystem from '../features/clock/clock-system';
+import SceneConfigurationSystem from '../specifics/configuration/scene-configuration-system';
+import FxSystem from '../features/fx/fx-system';
+import FxConfigurationSystem from '../specifics/configuration/fx-configuration-system';
+import EventOrchestratorSystem from '../features/event-orchestrator/event-orchestrator-system';
+import PlayerControlIntentSystem from '../features/player-control/player-control-intent-system';
+import SanitySystem from '../features/sanity/sanity-system';
+import GameOverSystem from '../features/game-over/game-over-system';
+import HeartbeatSystem from '../features/heartbeat/heartbeat-system';
+import BackgroundSystem from '../features/background/background-system';
 
 let stopTitle = false;
 function addSystems() {
@@ -59,8 +97,8 @@ function addSystems() {
     ////
     // Rendering
     Core.addSystem(new RenderSystem())
-        Core.addTag(Renderable)
         Core.addSystem(new RenderRenderablesSystem())
+            Core.addTag(Renderable)
         Core.addSystem(new TextureSystem());
 
 
@@ -73,23 +111,33 @@ function addSystems() {
         Core.addSystem(new PropGeneratorSystem());
         Core.addSystem(new MapGeneratorSystem());
 
+    // Camera
+    Core.addSystem(new ViewportSystem());
+        Core.addTag(ViewportFollowable)
+
     // Audio
     Core.addSystem(new AudioSystem());
         Core.addTag(AudioListener);
 
-    //Lighting
-    Core.addSystem(new LightSystem())
-        Core.addTag(Lightable)
-        Core.addTag(Shadowable)
+    //Lighting (Shadow by Default)
+    // Core.addSystem(new LightSystem())
+    //     Core.addTag(Lightable)
+    //     Core.addTag(Shadowable)
+
+    // Input
+    Core.addSystem(new InputSystem())
+        Core.addSystem(new MouseTrackerSystem());
 
     // Per-entity logic
     Core.addSystem(new LogicSystem());
         Core.addTag(HasLogic)
 
+
     // Extras
     Core.addSystem(new ParticleSystem());
         Core.addTag(ParticleEmitter);
     
+
     // Movement and attached object syncing [ordering matters here]
     Core.addSystem(new MovementProposalSystem());
         Core.addTag(Movable);
@@ -101,33 +149,27 @@ function addSystems() {
     Core.addSystem(new AttachmentSyncSystem())
         Core.addTag(Attached)
     
-    // Utilities
-    Core.addSystem(new TimerSystem());
-        Core.addTag(Timer);
-
-
-    ////
-    // Features
-    ////
+    // FX
     Core.addTag(Material);
-    Core.addSystem(new FootstepFxSystem());
-        Core.addTag(HasFootsteps);
-    Core.addSystem(new TrailSystem());
-        Core.addTag(TrailZone);
-        Core.addTag(TrailEmitter);
-
-
-    // Game logic and conditions
 
     ////
     // Game-specific configuration
     ////
 
     // Game Specific Configuration
-    Core.addSystem(new CollisionConfigurationSystem());
     Core.addSystem(new LogicConfigurationSystem());
-    Core.addSystem(new AssetConfigurationSystem({skipMapLoad: true})); // Must go after logic
+    Core.addSystem(new AssetConfigurationSystem()); // Must go after logic
+    Core.addSystem(new SceneConfigurationSystem());
+    Core.addSystem(new FxConfigurationSystem())
 
+
+    //Debug
+    Core.addSystem(new DebugUiSystem());
+
+    /////
+    Core.addSystem(new BackgroundSystem({mode: 'title'}))
+    Core.addSystem(new ClockSystem({mode: 'title'}));
+    /////
 
     Core.start();
 }

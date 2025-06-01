@@ -6,15 +6,19 @@ import RenderComponent from '@game/engine/renderer/render-component';
 import AttachedComponent from '../../engine/attachments/attached-component';
 
 export default class BackgroundSystem extends System {
-  constructor() {
+  constructor(params = {}) {
     super();
+    this.mode = params.mode || 'game'
 
   }
 
   initialize() {
     this.addBackground();
-    this.addBulletinBoard();
-    this.addFilingCabinet();
+
+    if (this.mode == 'game') {
+      this.addBulletinBoard();
+      this.addFilingCabinet();
+    }
   }
 
   work() {

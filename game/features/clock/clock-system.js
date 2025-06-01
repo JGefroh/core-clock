@@ -6,10 +6,13 @@ import RenderComponent from '@game/engine/renderer/render-component';
 import AttachedComponent from '../../engine/attachments/attached-component';
 
 export default class ClockSystem extends System {
-  constructor() {
+  constructor(params = {}) {
     super();
+    this.mode = params.mode || 'game'
 
-    this.clockSize = window.innerHeight / 2;
+    this.clockSize = this.mode == 'game' ? window.innerHeight / 2 : window.innerHeight * 1.5;
+
+
     this.lastAdvanceTimestamp = performance.now();
     this.timeBetweenAdvancesMs = 1000; // Default advance interval
     this.clockVolume = 0.6;
