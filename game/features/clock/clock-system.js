@@ -176,7 +176,7 @@ export default class ClockSystem extends System {
         width: width,
         height: height,
         shape: 'rectangle',
-        shapeColor: 'rgba(0,255,0,1)',
+        shapeColor: 'rgba(0,0,0,1)',
         renderLayer: 'PROP',
         renderAlignment: 'center'
     }))
@@ -221,7 +221,7 @@ export default class ClockSystem extends System {
         width: width,
         height: height,
         shape: 'rectangle',
-        shapeColor: 'rgba(255,0,255,1)',
+        shapeColor: 'rgba(0,0,0,1)',
         renderLayer: 'PROP',
         renderAlignment: 'center'
     }))
