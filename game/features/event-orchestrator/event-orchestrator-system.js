@@ -13,6 +13,7 @@ export default class EventOrchestratorSystem extends System {
         this.wait = 2000;
         this.nextEventTime = Date.now();
         this.currentEvent = null;
+        this.eventsDisabled = false;
 
         this.addHandler('REGISTER_FX', (payload) => {
             this.addAsEvent(payload)
@@ -25,10 +26,14 @@ export default class EventOrchestratorSystem extends System {
         this.addHandler('STOP_EVENT', (payload) => {
             this.stopEvent();
         });
+
+        this.addHandler('DISABLE_EVENTS', (payload) => {
+            this.eventsDisabled = true;
+        });
     }
 
     work() {
-        if (Date.now() >= this.nextEventTime && Math.random() < 0.2) {
+        if (!this.eventsDisabled && Date.now() >= this.nextEventTime && Math.random() < 0.2) {
             this.runEvent();
         }
     }

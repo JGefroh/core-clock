@@ -19,12 +19,15 @@ export default class GameOverSystem extends System {
 
     setGameOver() {
         this.gameOver = true;
+        this.send('STOP_EVENT');
+        this.send('DISABLE_EVENTS');
+
         let survivedTime = this.getSurvivedMinutesAndSeconds(this.startedAt);
         this.send("ADD_GUI_RENDERABLE", {
             key: 'GAME_OVER',
             text: 'GAME OVER',
-            xPosition: (window.innerWidth / 2) - 300,
-            yPosition: window.innerHeight / 4,
+            xPosition: (window.innerWidth / 2) - 200,
+            yPosition: window.innerHeight / 4 - 100,
             width: 1000,
             height: 500,
             fontSize: 50,
@@ -33,8 +36,8 @@ export default class GameOverSystem extends System {
         this.send("ADD_GUI_RENDERABLE", {
             key: 'GAME_OVER_2',
             text: `You survived ${survivedTime}.`,
-            xPosition: (window.innerWidth / 2) - 300,
-            yPosition: window.innerHeight / 4 + 70,
+            xPosition: (window.innerWidth / 2) - 200,
+            yPosition: window.innerHeight / 4 + -100 + 70,
             width: 1000,
             height: 500,
             fontSize: 24,
