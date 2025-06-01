@@ -11,7 +11,9 @@ This is not intended to be used in a commercial or production environment - it w
 ---
 
 # Screenshots
-<img width="2043" src="https://github.com/JGefroh/core-light/blob/main/static/screenshots/title.gif">
+
+![Screenshot 2025-05-31 at 8 15 45 PM](https://github.com/user-attachments/assets/20f1938d-fe7c-4f68-bfd5-4ef5ac943207)
+![Screenshot 2025-05-31 at 8 15 37 PM](https://github.com/user-attachments/assets/35f0408a-27dd-4e73-a20c-7cf049bc35e2)
 
 
 
