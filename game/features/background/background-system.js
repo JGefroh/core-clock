@@ -51,8 +51,8 @@ export default class BackgroundSystem extends System {
         type: 'BULLETIN_BOARD',
         xPosition: -(window.innerWidth / 2),
         yPosition: 0,
-        width: 964 * .9, 
-        height: 1265 * .9, 
+        width: 964 * .7, 
+        height: 1265 * .7, 
       });
   }
 

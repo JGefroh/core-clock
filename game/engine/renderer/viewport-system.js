@@ -120,6 +120,11 @@ export default class ViewportSystem extends System {
       this.viewportWorldXPosition = payload.xPosition / this.viewportScale;
     })
 
+    this.addHandler('ADJUST_VIEWPORT_SCALE', (payload) => {
+      this.viewportScale += payload.scale;
+    })
+
+
     this.addHandler('SET_VIEWPORT_SCALE', (payload) => {
       this.viewportScale = payload.scale;
     })

@@ -62,11 +62,13 @@ export default class SanitySystem extends System {
 
     work() {
         let drain = this._core.getData('CURRENT_EVENT_SANITY_DRAIN');
-        if (drain >= 0) {
+        if (drain > 0) {
             this.playerSanity -= drain;
         }
+
         this._core.publishData('CURRENT_SANITY', this.playerSanity)
         this.randomSanityEvent();
+
     }
 
     onRestoreSanity() {
@@ -94,8 +96,7 @@ export default class SanitySystem extends System {
                 audioKey: _getRandomFrom(this.aggressive_nos),
                 volume: 0.5
             });
-        }
-        
+        }        
     }
 
     randomSanityEvent() {
