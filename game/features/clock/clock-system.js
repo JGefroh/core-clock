@@ -9,6 +9,7 @@ export default class ClockSystem extends System {
   constructor() {
     super();
 
+    this.clockSize = window.innerHeight / 2;
     this.lastAdvanceTimestamp = performance.now();
     this.timeBetweenAdvancesMs = 1000; // Default advance interval
     this.clockVolume = 0.6;
@@ -116,7 +117,7 @@ export default class ClockSystem extends System {
 
   createClock() {
     let entity = new Entity({key: 'clock-face'})
-    let width = window.innerHeight;
+    let width = this.clockSize;
     let height = width;
     let xPosition = 0;
     let yPosition = 0;
@@ -143,7 +144,7 @@ export default class ClockSystem extends System {
 
   createHandHour() {
     let width = 10;
-    let height = window.innerHeight / 2.5;
+    let height = this.clockSize * 0.4
     let xPosition = 0;
     let yPosition = 0;
 
@@ -188,7 +189,7 @@ export default class ClockSystem extends System {
 
   createHandMinute() {
     let width = 5;
-    let height = window.innerHeight / 2.5;
+    let height = this.clockSize * 0.4
     let xPosition = 0;
     let yPosition = 0;
 
@@ -233,7 +234,7 @@ export default class ClockSystem extends System {
 
   createHandSecond() {
     let width = 5;
-    let height = window.innerHeight / 2.5;
+    let height = this.clockSize * 0.4;
     let xPosition = 0;
     let yPosition = 0;
 

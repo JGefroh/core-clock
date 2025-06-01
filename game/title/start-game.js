@@ -87,6 +87,7 @@ import PlayerControlIntentSystem from '../features/player-control/player-control
 import SanitySystem from '../features/sanity/sanity-system';
 import GameOverSystem from '../features/game-over/game-over-system';
 import HeartbeatSystem from '../features/heartbeat/heartbeat-system';
+import BackgroundSystem from '../features/background/background-system';
 
 export function startGame() {
 
@@ -206,6 +207,7 @@ export function startGame() {
     Core.addSystem(new DebugUiSystem());
 
     /////
+    Core.addSystem(new BackgroundSystem())
     Core.addSystem(new ClockSystem());
     Core.addSystem(new PlayerControlIntentSystem());
     Core.addSystem(new SanitySystem());
