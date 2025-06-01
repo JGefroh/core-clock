@@ -36,6 +36,19 @@ export default class SanitySystem extends System {
             'no-aggressive-4.mp3',
         ]
 
+        this.whispers = [
+            'whisper-1.mp3',
+            'whisper-2.mp3',
+            'whisper-3.mp3',
+            'whisper-4.mp3',
+        ]
+
+        this.officeSounds = [
+            'telephone-ring.mp3',
+            'crying-1.mp3',
+            'office-laughter.mp3'
+        ]
+
         this.addHandler('DRAIN_SANITY', (payload) => {
             this.playerSanity -= payload.sanity;
             this.onDrainSanity();
@@ -89,13 +102,13 @@ export default class SanitySystem extends System {
         if (Math.random() < 0.1) {
             if (this.playerSanity > 150) {
                 this.send('PLAY_AUDIO', {   
-                    audioKey: 'telephone-ring.mp3',
-                    volume: 1
+                    audioKey: _getRandomFrom(this.officeSounds),
+                    volume: 0.2
                 });
             }
             else if (this.playerSanity <= 150) {
                 this.send('PLAY_AUDIO', {   
-                    audioKey: 'whisper-1.mp3',
+                    audioKey: _getRandomFrom(this.whispers),
                     volume: 0.5
                 });
             }
