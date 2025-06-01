@@ -86,6 +86,7 @@ import EventOrchestratorSystem from '../features/event-orchestrator/event-orches
 import PlayerControlIntentSystem from '../features/player-control/player-control-intent-system';
 import SanitySystem from '../features/sanity/sanity-system';
 import GameOverSystem from '../features/game-over/game-over-system';
+import HeartbeatSystem from '../features/heartbeat/heartbeat-system';
 
 export function startGame() {
 
@@ -186,6 +187,8 @@ export function startGame() {
     ////
     // Game-specific configuration
     ////
+
+    Core.addSystem(new HeartbeatSystem());
 
     Core.addSystem(new EventOrchestratorSystem());
 

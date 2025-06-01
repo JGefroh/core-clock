@@ -8,7 +8,7 @@ export default class SanitySystem extends System {
     constructor() {
         super()
 
-        this.playerSanity = 1000;
+        this.playerSanity = 500;
         this.wait = 1000;
 
         this.yes = [
@@ -64,19 +64,19 @@ export default class SanitySystem extends System {
     }
 
     onDrainSanity() {
-        if (this.playerSanity >= 600) {
+        if (this.playerSanity >= 400) {
             this.send('PLAY_AUDIO', {   
                 audioKey: _getRandomFrom(this.whisper_nos),
                 volume: 0.5
             });
         }
-        else if (this.playerSanity >= 400) {
+        else if (this.playerSanity >= 250) {
             this.send('PLAY_AUDIO', {   
                 audioKey: _getRandomFrom(this.frustrated_nos),
                 volume: 0.5
             });
         }
-        else if (this.playerSanity >= 0) {
+        else if (this.playerSanity >= 150) {
             this.send('PLAY_AUDIO', {   
                 audioKey: _getRandomFrom(this.aggressive_nos),
                 volume: 0.5
